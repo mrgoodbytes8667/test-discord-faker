@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Bytes\Tests\Common\Faker;
+namespace Bytes\Common\Faker\Discord;
 
 
-use Bytes\Tests\Common\Faker\Providers\Discord;
-use Bytes\Tests\Common\Faker\Providers\MiscProvider;
-use Faker\Factory;
+use Bytes\Common\Faker\Providers\Discord;
+use Bytes\Common\Faker\Providers\MiscProvider;
+use Bytes\Common\Faker\TestFakerTrait;
 use Faker\Generator as FakerGenerator;
 use Faker\Provider\Address;
 use Faker\Provider\Barcode;
@@ -30,33 +30,13 @@ use Faker\Provider\Uuid;
 
 /**
  * Trait TestDiscordFakerTrait
- * @package Bytes\Tests\Common\Faker
+ * @package Bytes\Common\Faker\Discord
+ *
+ * @property Discord|FakerGenerator|MiscProvider|Address|Barcode|Biased|Color|Company|DateTime|File|HtmlLorem|Image|Internet|Lorem|Medical|Miscellaneous|Payment|Person|PhoneNumber|Text|UserAgent|Uuid $faker
  */
 trait TestDiscordFakerTrait
 {
-    /**
-     * @var Discord|FakerGenerator|MiscProvider|Address|Barcode|Biased|Color|Company|DateTime|File|HtmlLorem|Image|Internet|Lorem|Medical|Miscellaneous|Payment|Person|PhoneNumber|Text|UserAgent|Uuid
-     */
-    protected $faker;
+    use TestFakerTrait;
 
-    /**
-     * @before
-     */
-    protected function setupFaker(): void
-    {
-        if (is_null($this->faker)) {
-            /** @var FakerGenerator|Discord $faker */
-            $faker = Factory::create();
-            $faker->addProvider(new Discord($faker));
-            $this->faker = $faker;
-        }
-    }
-
-    /**
-     * @after
-     */
-    protected function tearDownFaker(): void
-    {
-        $this->faker = null;
-    }
+    protected $providers = [Discord::class];
 }

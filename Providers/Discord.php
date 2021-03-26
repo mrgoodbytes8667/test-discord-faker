@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Bytes\Tests\Common\Faker\Providers;
+namespace Bytes\Common\Faker\Providers;
 
 
 use Bytes\DiscordResponseBundle\Objects\Embed\Embed;
@@ -32,7 +32,7 @@ use Illuminate\Support\Arr;
 
 /**
  * Class Discord
- * @package Bytes\Tests\Common\Faker\Providers
+ * @package Bytes\Common\Faker\Providers
  *
  * @property Generator|MiscProvider|Address|Barcode|Biased|Color|Company|DateTime|File|HtmlLorem|Image|Internet|Lorem|Medical|Miscellaneous|Payment|Person|PhoneNumber|Text|UserAgent|Uuid $generator
  */
