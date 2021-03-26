@@ -1,0 +1,30 @@
+{
+    "name": "mrgoodbytes8667/test-discord-faker",
+    "type": "library",
+    "description": "Discord Faker provider",
+    "require": {
+        "php": "^7.4 | ^8.0",
+        "mrgoodbytes8667/test-common-faker": "^0.0.4"
+    },
+    "require-dev": {
+        "mrgoodbytes8667/discord-response-bundle": "^0.7.3"
+    },
+    "authors": [
+        {
+            "name": "MrGoodBytes",
+            "email": "bytes@goodbytes.live"
+        }
+    ],
+    "config": {
+        "sort-packages": true
+    },
+    "suggest": {
+        "mrgoodbytes8667/test-common": "Common helper traits for PHPUnit with Symfony",
+        "symfony/phpunit-bridge": "Integrate Symfony with PHPUnit"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bytes\\Tests\\Common\\Faker\\": "src/"
+        }
+    }
+}
