@@ -8,17 +8,13 @@ use Bytes\DiscordResponseBundle\Objects\Embed\Embed;
 use Bytes\DiscordResponseBundle\Objects\Embed\Field;
 use Exception;
 use Faker\Generator;
+use Faker\Provider\Address;
 use Faker\Provider\Barcode;
 use Faker\Provider\Base;
 use Faker\Provider\Biased;
 use Faker\Provider\Color;
-use Faker\Provider\DateTime;
-use Faker\Provider\Address;
 use Faker\Provider\Company;
-use Faker\Provider\Payment;
-use Faker\Provider\Person;
-use Faker\Provider\PhoneNumber;
-use Faker\Provider\Text;
+use Faker\Provider\DateTime;
 use Faker\Provider\File;
 use Faker\Provider\HtmlLorem;
 use Faker\Provider\Image;
@@ -26,6 +22,10 @@ use Faker\Provider\Internet;
 use Faker\Provider\Lorem;
 use Faker\Provider\Medical;
 use Faker\Provider\Miscellaneous;
+use Faker\Provider\Payment;
+use Faker\Provider\Person;
+use Faker\Provider\PhoneNumber;
+use Faker\Provider\Text;
 use Faker\Provider\UserAgent;
 use Faker\Provider\Uuid;
 use Illuminate\Support\Arr;
@@ -84,6 +84,8 @@ class Discord extends Base
         return ($isGif ? 'a_' : '') . substr($output, 0, 32);
     }
 
+    //region Object Ids
+
     /**
      * @return string
      */
@@ -139,6 +141,7 @@ class Discord extends Base
     {
         return self::snowflake(8);
     }
+    //endregion
 
     /**
      * @return string
@@ -183,6 +186,7 @@ class Discord extends Base
         return str_pad($this->generator->numberBetween(0, 9999), 4, '0', STR_PAD_LEFT);
     }
 
+    //region Token
     /**
      * @return string
      */
@@ -309,6 +313,7 @@ class Discord extends Base
         }
         return $return;
     }
+    //endregion
 
     /**
      * @return int
