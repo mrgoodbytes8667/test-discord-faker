@@ -436,15 +436,23 @@ class Discord extends Base
     /**
      * @return array
      */
-    public function rateLimitArray()
+    public function rateLimitArray(bool $noRemaining = false)
     {
+        $reset = $this->generator->dateTimeInInterval('now', '+3 seconds')->getTimestamp();
+        $now = new \DateTime();
+
         $info = [
             'X-RateLimit-Bucket' => self::rateLimitBucket(),
             'X-RateLimit-Limit' => self::rateLimit(),
             'X-RateLimit-Remaining' => 4,
-            'X-RateLimit-Reset-After' => self::rateLimitResetAfter(),
+            'X-RateLimit-Reset' => $reset,
+            'X-RateLimit-Reset-After' => $reset - ($now->getTimestamp()) + $this->generator->randomFloat(3, 0, 0.9),
         ];
-        $info['X-RateLimit-Remaining'] = self::rateLimit($info['X-RateLimit-Limit']);
+        if($noRemaining) {
+            $info['X-RateLimit-Remaining'] = 0;
+        } else {
+            $info['X-RateLimit-Remaining'] = self::rateLimit($info['X-RateLimit-Limit']);
+        }
 
         return $info;
     }
