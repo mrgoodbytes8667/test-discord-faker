@@ -187,6 +187,7 @@ class Discord extends Base
     }
 
     //region Token
+
     /**
      * @return string
      */
@@ -200,19 +201,7 @@ class Discord extends Base
      */
     public function accessToken()
     {
-        $output = '';
-        foreach (range(1, 30) as $i) {
-            $output .= $this->generator->randomElement(self::getAlphanumerics());
-        }
-        return $output;
-    }
-
-    /**
-     * @return string[]
-     */
-    public static function getAlphanumerics()
-    {
-        return str_split('123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz');
+        return $this->generator->randomAlphanumericString(30);
     }
 
     /**
@@ -389,6 +378,8 @@ class Discord extends Base
         return $this->generator->randomElements($options, count($options), false);
     }
 
+    //region Embeds
+
     /**
      * @return Embed[]|null
      */
@@ -438,4 +429,48 @@ class Discord extends Base
     {
         return hexdec('0x' . str_pad(dechex(self::numberBetween(1, 16777215)), 6, '0', STR_PAD_LEFT));
     }
+    //endregion
+
+    //region Mock Rate Limits
+
+    /**
+     * @return array
+     */
+    public function rateLimitArray()
+    {
+        $info = [
+            'X-RateLimit-Bucket' => self::rateLimitBucket(),
+            'X-RateLimit-Limit' => self::rateLimit(),
+            'X-RateLimit-Remaining' => 4,
+            'X-RateLimit-Reset-After' => self::rateLimitResetAfter(),
+        ];
+        $info['X-RateLimit-Remaining'] = self::rateLimit($info['X-RateLimit-Limit']);
+
+        return $info;
+    }
+
+    /**
+     * @return string
+     */
+    public function rateLimitBucket()
+    {
+        return $this->generator->randomAlphanumericString(8);
+    }
+
+    /**
+     * @return int
+     */
+    public function rateLimit(int $max = 60)
+    {
+        return $this->generator->numberBetween(5, $max);
+    }
+
+    /**
+     * @return float
+     */
+    public function rateLimitResetAfter()
+    {
+        return $this->generator->randomFloat(3, 1, 60);
+    }
+    //endregion
 }
