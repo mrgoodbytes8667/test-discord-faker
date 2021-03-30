@@ -4,7 +4,7 @@
     "description": "Discord Faker provider",
     "require": {
         "php": "^7.4 | ^8.0",
-        "mrgoodbytes8667/test-common-faker": "^0.2.3"
+        "mrgoodbytes8667/test-common-faker": "^0.2.4"
     },
     "require-dev": {
         "mrgoodbytes8667/discord-response-bundle": "^0.7.3"
@@ -19,6 +19,7 @@
         "sort-packages": true
     },
     "suggest": {
+        "mrgoodbytes8667/discord-response-bundle": "Necessary for actual usage",
         "mrgoodbytes8667/test-common": "Common helper traits for PHPUnit with Symfony",
         "symfony/phpunit-bridge": "Integrate Symfony with PHPUnit"
     },

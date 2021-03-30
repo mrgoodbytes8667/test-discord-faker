@@ -4,6 +4,7 @@
 namespace Bytes\Common\Faker\Providers;
 
 
+use Bytes\DiscordResponseBundle\Enums\Emojis;
 use Bytes\DiscordResponseBundle\Objects\Embed\Embed;
 use Bytes\DiscordResponseBundle\Objects\Embed\Field;
 use Exception;
@@ -28,16 +29,18 @@ use Faker\Provider\PhoneNumber;
 use Faker\Provider\Text;
 use Faker\Provider\UserAgent;
 use Faker\Provider\Uuid;
-use Illuminate\Support\Arr;
+use Spatie\Enum\Faker\FakerEnumProvider;
 
 /**
  * Class Discord
  * @package Bytes\Common\Faker\Providers
  *
- * @property Generator|MiscProvider|Address|Barcode|Biased|Color|Company|DateTime|File|HtmlLorem|Image|Internet|Lorem|Medical|Miscellaneous|Payment|Person|PhoneNumber|Text|UserAgent|Uuid $generator
+ * @property Generator|MiscProvider|Address|Barcode|Biased|Color|Company|DateTime|File|HtmlLorem|Image|Internet|Lorem|Medical|Miscellaneous|Payment|Person|PhoneNumber|Text|UserAgent|Uuid|FakerEnumProvider $generator
  */
 class Discord extends Base
 {
+    use SetupDependenciesTrait;
+
     /**
      *
      */
@@ -62,12 +65,8 @@ class Discord extends Base
      */
     public function __construct(Generator $generator)
     {
-        $find = Arr::first($generator->getProviders(), function ($value, $key) {
-            return get_class($value) === MiscProvider::class;
-        });
-        if (is_null($find)) {
-            $generator->addProvider(new MiscProvider($generator));
-        }
+        self::addProviderIfNeeded(MiscProvider::class, $generator);
+        self::addProviderIfNeeded(FakerEnumProvider::class, $generator);
         parent::__construct($generator);
     }
 
@@ -448,7 +447,7 @@ class Discord extends Base
             'X-RateLimit-Reset' => $reset,
             'X-RateLimit-Reset-After' => $reset - ($now->getTimestamp()) + $this->generator->randomFloat(3, 0, 0.9),
         ];
-        if($noRemaining) {
+        if ($noRemaining) {
             $info['X-RateLimit-Remaining'] = 0;
         } else {
             $info['X-RateLimit-Remaining'] = self::rateLimit($info['X-RateLimit-Limit']);
@@ -479,6 +478,36 @@ class Discord extends Base
     public function rateLimitResetAfter()
     {
         return $this->generator->randomFloat(3, 1, 60);
+    }
+    //endregion
+
+    //region Emoji
+
+    /**
+     * @return string
+     */
+    public function emoji()
+    {
+        return $this->generator->randomElement([
+            self::globalEmoji(),
+            self::customEmoji(),
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function globalEmoji()
+    {
+        return $this->generator->randomEnumValue(Emojis::class);
+    }
+
+    /**
+     * @return string
+     */
+    public function customEmoji()
+    {
+        return sprintf(':%s:%s', $this->generator->word(), self::snowflake());
     }
     //endregion
 }
