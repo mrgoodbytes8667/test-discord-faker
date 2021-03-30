@@ -4,7 +4,7 @@
     "description": "Discord Faker provider",
     "require": {
         "php": "^7.4 | ^8.0",
-        "mrgoodbytes8667/test-common-faker": "0.2.2"
+        "mrgoodbytes8667/test-common-faker": "^0.2.3"
     },
     "require-dev": {
         "mrgoodbytes8667/discord-response-bundle": "^0.7.3"
