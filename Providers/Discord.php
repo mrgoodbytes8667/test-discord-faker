@@ -217,7 +217,7 @@ class Discord extends Base
             return $value > 2;
         })->randomElement(ApplicationCommandOptionType::toValues()));
         $choices = [];
-        if($this->generator->boolean(75)) {
+        if ($this->generator->boolean(75) && ($type == ApplicationCommandOptionType::string() || $type == ApplicationCommandOptionType::integer())) {
             foreach ($this->generator->rangeBetween(4, 1, 2) as $index) {
                 $choice = self::applicationCommandOptionChoice($type);
                 if (!is_null($choice)) {
