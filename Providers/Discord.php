@@ -4,9 +4,13 @@
 namespace Bytes\Common\Faker\Providers;
 
 
+use Bytes\DiscordResponseBundle\Enums\ApplicationCommandOptionType;
 use Bytes\DiscordResponseBundle\Enums\Emojis;
 use Bytes\DiscordResponseBundle\Objects\Embed\Embed;
 use Bytes\DiscordResponseBundle\Objects\Embed\Field;
+use Bytes\DiscordResponseBundle\Objects\Slash\ApplicationCommand;
+use Bytes\DiscordResponseBundle\Objects\Slash\ApplicationCommandOption;
+use Bytes\DiscordResponseBundle\Objects\Slash\ApplicationCommandOptionChoice;
 use Exception;
 use Faker\Generator;
 use Faker\Provider\Address;
@@ -184,6 +188,68 @@ class Discord extends Base
     {
         return str_pad($this->generator->numberBetween(0, 9999), 4, '0', STR_PAD_LEFT);
     }
+
+    //region Application Commands
+
+    /**
+     * @return ApplicationCommand
+     */
+    public function applicationCommand()
+    {
+        $options = [];
+        if($this->generator->boolean())
+        {
+            $options[] = self::applicationCommandOption(true);
+        }
+        foreach($this->generator->rangeBetween() as $index) {
+            $options[] = self::applicationCommandOption(false);
+        }
+        return ApplicationCommand::create($this->generator->word(), $this->generator->words(3, true), $options);
+    }
+
+    /**
+     * @param bool|null $required
+     * @return ApplicationCommandOption
+     */
+    public function applicationCommandOption(?bool $required = null)
+    {
+        $type = ApplicationCommandOptionType::make($this->generator->valid(function ($value) {
+            return $value > 2;
+        })->randomElement(ApplicationCommandOptionType::toValues()));
+        $choices = [];
+        if($this->generator->boolean(75)) {
+            foreach ($this->generator->rangeBetween(4, 1, 2) as $index) {
+                $choice = self::applicationCommandOptionChoice($type);
+                if (!is_null($choice)) {
+                    $choices[] = $choice;
+                }
+            }
+        }
+        return ApplicationCommandOption::create($type, $this->generator->word(), $this->generator->words(3, true), is_null($required) ? $this->generator->boolean() : $required, $choices);
+    }
+
+    /**
+     * @param ApplicationCommandOptionType $type
+     * @return ApplicationCommandOptionChoice
+     */
+    public function applicationCommandOptionChoice(ApplicationCommandOptionType $type) {
+        switch ($type) {
+            case ApplicationCommandOptionType::boolean():
+                $value = $this->generator->boolean();
+                break;
+            case ApplicationCommandOptionType::integer():
+                $value = $this->generator->randomDigitNotNull();
+                break;
+            case ApplicationCommandOptionType::string():
+                $value = $this->generator->word();
+                break;
+            default:
+                return null;
+                break;
+        }
+        return ApplicationCommandOptionChoice::create($this->generator->word(), $value);
+    }
+    //endregion
 
     //region Token
 
