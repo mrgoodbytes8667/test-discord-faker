@@ -5,6 +5,7 @@ namespace Bytes\Common\Faker\Providers;
 
 
 use Bytes\DiscordResponseBundle\Enums\ApplicationCommandOptionType;
+use Bytes\DiscordResponseBundle\Enums\ApplicationCommandPermissionType;
 use Bytes\DiscordResponseBundle\Enums\Emojis;
 use Bytes\DiscordResponseBundle\Objects\Embed\Embed;
 use Bytes\DiscordResponseBundle\Objects\Embed\Field;
@@ -238,6 +239,7 @@ class Discord extends Base
                 $value = $this->generator->boolean();
                 break;
             case ApplicationCommandOptionType::integer():
+            case ApplicationCommandOptionType::number():
                 $value = $this->generator->randomDigitNotNull();
                 break;
             case ApplicationCommandOptionType::string():
@@ -248,6 +250,15 @@ class Discord extends Base
                 break;
         }
         return ApplicationCommandOptionChoice::create($this->generator->word(), $value);
+    }
+
+    /**
+     * Returns a ApplicationCommandPermissionType value
+     * @return ApplicationCommandPermissionType
+     */
+    public function applicationCommandPermissionType(): ApplicationCommandPermissionType
+    {
+        return $this->generator->randomEnum(ApplicationCommandPermissionType::class);
     }
     //endregion
 
