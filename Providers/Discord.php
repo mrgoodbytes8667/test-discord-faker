@@ -11,6 +11,8 @@ use Bytes\DiscordResponseBundle\Enums\Emojis;
 use Bytes\DiscordResponseBundle\Objects\ChannelMention;
 use Bytes\DiscordResponseBundle\Objects\Embed\Embed;
 use Bytes\DiscordResponseBundle\Objects\Embed\Field;
+use Bytes\DiscordResponseBundle\Objects\Emoji;
+use Bytes\DiscordResponseBundle\Objects\Reaction;
 use Bytes\DiscordResponseBundle\Objects\Slash\ApplicationCommand;
 use Bytes\DiscordResponseBundle\Objects\Slash\ApplicationCommandOption;
 use Bytes\DiscordResponseBundle\Objects\Slash\ApplicationCommandOptionChoice;
@@ -589,6 +591,18 @@ class Discord extends Base
     {
         return sprintf(':%s:%s', $this->generator->word(), self::snowflake());
     }
+
+    /**
+     * @return Emoji
+     */
+    public function emojiObject()
+    {
+        $emoji = new Emoji();
+        $emoji->setId(self::snowflake())
+            ->setName($this->generator->word());
+
+        return $emoji;
+    }
     //endregion
 
     //region Objects
@@ -620,6 +634,31 @@ class Discord extends Base
             ->setName($this->generator->sentence());
 
         return $channel;
+    }
+
+    /**
+     * @return Reaction
+     */
+    public function reaction()
+    {
+        $reaction = new Reaction();
+        $reaction->setEmoji(self::emojiObject())
+            ->setCount($this->generator->randomDigitNotNull())
+            ->setMe($this->generator->boolean());
+
+        return $reaction;
+    }
+
+    /**
+     * @param int $max
+     * @return Reaction[]|null
+     */
+    public function reactions(int $max = 3)
+    {
+        foreach ($this->generator->rangeBetween($max) as $item) {
+            $reactions[] = self::reaction();
+        }
+        return $reactions;
     }
     //endregion
 }
