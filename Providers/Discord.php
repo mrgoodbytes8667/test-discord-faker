@@ -6,12 +6,15 @@ namespace Bytes\Common\Faker\Providers;
 
 use Bytes\DiscordResponseBundle\Enums\ApplicationCommandOptionType;
 use Bytes\DiscordResponseBundle\Enums\ApplicationCommandPermissionType;
+use Bytes\DiscordResponseBundle\Enums\ChannelTypes;
 use Bytes\DiscordResponseBundle\Enums\Emojis;
+use Bytes\DiscordResponseBundle\Objects\ChannelMention;
 use Bytes\DiscordResponseBundle\Objects\Embed\Embed;
 use Bytes\DiscordResponseBundle\Objects\Embed\Field;
 use Bytes\DiscordResponseBundle\Objects\Slash\ApplicationCommand;
 use Bytes\DiscordResponseBundle\Objects\Slash\ApplicationCommandOption;
 use Bytes\DiscordResponseBundle\Objects\Slash\ApplicationCommandOptionChoice;
+use Bytes\DiscordResponseBundle\Objects\User;
 use Exception;
 use Faker\Generator;
 use Faker\Provider\Address;
@@ -585,6 +588,38 @@ class Discord extends Base
     public function customEmoji()
     {
         return sprintf(':%s:%s', $this->generator->word(), self::snowflake());
+    }
+    //endregion
+
+    //region Objects
+    /**
+     * @return User
+     * @throws Exception
+     */
+    public function user()
+    {
+        $user = new User();
+        $user->setId(self::userId())
+            ->setUsername($this->generator->userName())
+            ->setAvatar(self::iconHash())
+            ->setDiscriminator(self::discriminator())
+            ->setPublicFlags($this->generator->randomDigit());
+
+        return $user;
+    }
+
+    /**
+     * @return ChannelMention
+     */
+    public function channelMention()
+    {
+        $channel = new ChannelMention();
+        $channel->setId(self::snowflake())
+            ->setGuildId(self::guildId())
+            ->setType($this->generator->randomEnumValue(ChannelTypes::class))
+            ->setName($this->generator->sentence());
+
+        return $channel;
     }
     //endregion
 }
