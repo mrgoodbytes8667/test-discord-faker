@@ -6,12 +6,18 @@ namespace Bytes\Common\Faker\Providers;
 
 use Bytes\DiscordResponseBundle\Enums\ApplicationCommandOptionType;
 use Bytes\DiscordResponseBundle\Enums\ApplicationCommandPermissionType;
+use Bytes\DiscordResponseBundle\Enums\ButtonStyle;
 use Bytes\DiscordResponseBundle\Enums\ChannelTypes;
 use Bytes\DiscordResponseBundle\Enums\Emojis;
+use Bytes\DiscordResponseBundle\Objects\Channel;
 use Bytes\DiscordResponseBundle\Objects\ChannelMention;
 use Bytes\DiscordResponseBundle\Objects\Embed\Embed;
 use Bytes\DiscordResponseBundle\Objects\Embed\Field;
 use Bytes\DiscordResponseBundle\Objects\Emoji;
+use Bytes\DiscordResponseBundle\Objects\Message\Component;
+use Bytes\DiscordResponseBundle\Objects\Message\SelectOption;
+use Bytes\DiscordResponseBundle\Objects\MessageReference;
+use Bytes\DiscordResponseBundle\Objects\PartialEmoji;
 use Bytes\DiscordResponseBundle\Objects\Reaction;
 use Bytes\DiscordResponseBundle\Objects\Slash\ApplicationCommand;
 use Bytes\DiscordResponseBundle\Objects\Slash\ApplicationCommandOption;
@@ -603,6 +609,14 @@ class Discord extends Base
 
         return $emoji;
     }
+
+    /**
+     * @return PartialEmoji
+     */
+    public function partialEmoji()
+    {
+        return PartialEmoji::create(self::snowflake(), $this->generator->word());
+    }
     //endregion
 
     //region Objects
@@ -659,6 +673,124 @@ class Discord extends Base
             $reactions[] = self::reaction();
         }
         return $reactions;
+    }
+
+    /**
+     * @return MessageReference
+     */
+    public function messageReference()
+    {
+        $ref = new MessageReference();
+        $ref->setMessageId(self::messageId())
+            ->setChannelID(self::channelId())
+            ->setGuildId(self::guildId())
+            ->setFailIfNotExists($this->generator->boolean());
+
+        return $ref;
+    }
+
+    /**
+     * @return Channel
+     */
+    public function channel()
+    {
+        $channel = new Channel();
+        $channel->setId(self::snowflake())
+            ->setGuildId(self::guildId())
+            ->setType($this->generator->randomEnumValue(ChannelTypes::class))
+            ->setName($this->generator->sentence());
+
+        return $channel;
+    }
+
+    /**
+     * @return Component
+     */
+    public function componentSelectMenu()
+    {
+        return Component::createSelectMenu($this->generator->word(), options: self::componentSelectOptions());
+    }
+
+    /**
+     * @return SelectOption
+     */
+    public function componentSelectOption()
+    {
+        return SelectOption::create($this->generator->sentence(), $this->generator->word(), $this->generator->sentence(), self::partialEmoji(), $this->generator->boolean());
+    }
+
+    /**
+     * @param int $max
+     * @return SelectOption[]|null
+     */
+    public function componentSelectOptions(int $max = 3)
+    {
+        $options = [];
+        foreach ($this->generator->rangeBetween($max) as $item) {
+            $options[] = self::componentSelectOption();
+        }
+        return $options;
+    }
+
+    /**
+     * @return Component
+     */
+    public function componentInteractiveButton()
+    {
+        return Component::createInteractiveButton(style: $this->generator->randomElement([
+            ButtonStyle::primary(), ButtonStyle::secondary(), ButtonStyle::danger(), ButtonStyle::success()
+        ]), customId: $this->generator->word(), label: $this->generator->sentence(), emoji: self::partialEmoji(),
+            disabled: $this->generator->boolean());
+    }
+
+    /**
+     * @return Component
+     */
+    public function componentLinkButton()
+    {
+        return Component::createLinkButton($this->generator->url(), label: $this->generator->sentence(), emoji: self::partialEmoji(), disabled: $this->generator->boolean());
+    }
+
+    /**
+     * @param int $max
+     * @return Component[]|null
+     */
+    public function componentButtons(int $max = 3)
+    {
+        $options = [];
+        foreach ($this->generator->rangeBetween($max) as $item) {
+            $options[] = $this->generator->randomElement([
+                self::componentLinkButton(),
+                self::componentInteractiveButton(),
+                ]);
+        }
+        return $options;
+    }
+
+    /**
+     * @return Component
+     */
+    public function componentActionRow()
+    {
+        return Component::createActionRow([
+            $options[] = $this->generator->randomElement([
+                self::componentSelectMenu(),
+                self::componentButtons(),
+            ])
+        ]);
+    }
+
+    /**
+     * @param int $max
+     * @return Component[]|null
+     */
+    public function componentActionRows(int $max = 3)
+    {
+        $options = [];
+        foreach ($this->generator->rangeBetween($max) as $item) {
+            $options[] = self::componentActionRow();
+        }
+        return $options;
     }
     //endregion
 }
