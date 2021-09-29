@@ -7,7 +7,8 @@
         "mrgoodbytes8667/test-common-faker": "^0.3.5"
     },
     "require-dev": {
-        "mrgoodbytes8667/discord-response-bundle": ">=0.10.1"
+        "mrgoodbytes8667/discord-response-bundle": ">=0.10.1",
+        "symfony/test-pack": "^1.0.9"
     },
     "authors": [
         {
@@ -23,10 +24,14 @@
         "mrgoodbytes8667/test-common": "Common helper traits for PHPUnit with Symfony",
         "symfony/phpunit-bridge": "Integrate Symfony with PHPUnit"
     },
+    "conflict": {
+        "phpunit/phpunit": "<9.5"
+    },
     "autoload": {
         "psr-4": {
             "Bytes\\Common\\Faker\\Providers\\": "Providers/",
-            "Bytes\\Common\\Faker\\Discord\\": "src/"
+            "Bytes\\Common\\Faker\\Discord\\": "src/",
+            "Bytes\\Common\\Faker\\Tests\\": "Tests/"
         }
     }
 }
