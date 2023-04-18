@@ -23,6 +23,7 @@ use Bytes\DiscordResponseBundle\Objects\Slash\ApplicationCommand;
 use Bytes\DiscordResponseBundle\Objects\Slash\ApplicationCommandOption;
 use Bytes\DiscordResponseBundle\Objects\Slash\ApplicationCommandOptionChoice;
 use Bytes\DiscordResponseBundle\Objects\User;
+use Bytes\EnumSerializerBundle\Faker\FakerEnumProvider;
 use Exception;
 use Faker\Generator;
 use Faker\Provider\Address;
@@ -45,7 +46,6 @@ use Faker\Provider\PhoneNumber;
 use Faker\Provider\Text;
 use Faker\Provider\UserAgent;
 use Faker\Provider\Uuid;
-use Spatie\Enum\Faker\FakerEnumProvider;
 
 /**
  * Class Discord

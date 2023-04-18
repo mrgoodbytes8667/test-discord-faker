@@ -21,6 +21,6 @@
     </coverage>
 
     <php>
-        <env name="SYMFONY_PHPUNIT_VERSION" value="9.5" />
+        <env name="SYMFONY_PHPUNIT_VERSION" value="10.0" />
     </php>
 </phpunit>
